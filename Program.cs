@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Microsoft.Extensions.Configuration;
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -15,15 +16,17 @@ namespace GitHub_User_Activity
 
             string apiKey = config["api_key"];
 
+            Console.WriteLine("---GitHub User Activity--");
+            Console.WriteLine();
+
             while (true)
             {
-                Console.WriteLine("---GitHub User Activity--");
-                Console.WriteLine();
                 Console.WriteLine("Enter desired user to fetch the activity from.");
                 Console.Write("> ");
                 string username = Console.ReadLine();
 
                 GitHubEvent githubevent = new GitHubEvent();
+
 
                 var client = new HttpClient();
 
@@ -38,6 +41,14 @@ namespace GitHub_User_Activity
 
                 var content = await response.Content.ReadAsStringAsync();
 
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"Error: {response.StatusCode} ");
+                    Console.WriteLine();
+                    continue;
+                }
+
                 //
 
                 var github = JsonSerializer.Deserialize<List<GitHubEvent>>(content);
@@ -47,14 +58,20 @@ namespace GitHub_User_Activity
                 //
 
                 Console.WriteLine();
-                foreach (GitHubRepoActivity repo in githubUser.Repos)
+                if (githubUser != null)
                 {
-                    string message = MessageHandler.EventMessages(repo);
-                    Console.WriteLine(message);
+                    foreach (GitHubRepoActivity repo in githubUser.Repos)
+                    {
+                        string message = MessageHandler.EventMessages(repo);
+                        Console.WriteLine(message);
+                        Console.WriteLine();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: could not find info about user");
                     Console.WriteLine();
                 }
-
-                break;
             }
         }
     }

@@ -10,6 +10,11 @@ namespace GitHub_User_Activity
     {
         public static GitHubUser UnionToOneUser(List<GitHubEvent> gitHubEvents)
         {
+            if (gitHubEvents.Count == 0)
+            {
+                return null;
+            }
+
             GitHubUser user = new GitHubUser();
             user.ID = gitHubEvents[0].Actor.ID; // only one user per call
             user.Repos = new List<GitHubRepoActivity>();
