@@ -5,3 +5,4 @@
 - Type the username you wish to search for.
 
 - This project was made for the roadmap. "https://roadmap.sh/projects/github-user-activity"
+- The project may also not work in the future as the API key will expire.
